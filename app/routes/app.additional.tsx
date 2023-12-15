@@ -1,43 +1,28 @@
 import {
+  BlockStack,
   Box,
   Card,
   Layout,
+  LegacyCard,
   Link,
   List,
   Page,
+  Tabs,
   Text,
-  BlockStack,
 } from "@shopify/polaris";
+import { useCallback, useState } from "react";
 
 export default function AdditionalPage() {
   return (
     <Page>
-      <ui-title-bar title="Additional page" />
+      <ui-title-bar title="Additional page">
+        <button variant="primary">Add subscription</button>
+      </ui-title-bar>
       <Layout>
         <Layout.Section>
-          <Card>
-            <BlockStack gap="300">
-              <Text as="p" variant="bodyMd">
-                The app template comes with an additional page which
-                demonstrates how to create multiple pages within app navigation
-                using{" "}
-                <Link
-                  url="https://shopify.dev/docs/apps/tools/app-bridge"
-                  target="_blank"
-                  removeUnderline
-                >
-                  App Bridge
-                </Link>
-                .
-              </Text>
-              <Text as="p" variant="bodyMd">
-                To create your own page and have it show up in the app
-                navigation, add a page inside <Code>app/routes</Code>, and a
-                link to it in the <Code>&lt;ui-nav-menu&gt;</Code> component
-                found in <Code>app/routes/app.jsx</Code>.
-              </Text>
-            </BlockStack>
-          </Card>
+          <LegacyCard>
+            <Content />
+          </LegacyCard>
         </Layout.Section>
         <Layout.Section variant="oneThird">
           <Card>
@@ -64,6 +49,59 @@ export default function AdditionalPage() {
   );
 }
 
+function Content() {
+  const [selected, setSelected] = useState(0);
+
+  const handleTabChange = useCallback(
+    (selectedTabIndex: number) => setSelected(selectedTabIndex),
+    [],
+  );
+
+  const tabs = [
+    [
+      {
+        id: "upcomingSubscriptions",
+        content: "Upcoming subscriptions content",
+        accessibilityLabel: "Upcoming subscriptions",
+        panelID: "upcomingSubscriptions-panel",
+      },
+      {
+        id: "withFailedPayment",
+        content: "With failed payment content",
+        accessibilityLabel: "With failed payment",
+        panelID: "withFailedPayment-panel",
+      },
+      {
+        id: "withPendingPayment",
+        content: "With pending payment content",
+        accessibilityLabel: "With pending payment",
+        panelID: "withPendingPayment-panel",
+      },
+      {
+        id: "paused",
+        content: "Paused content",
+        accessibilityLabel: "Paused",
+        panelID: "paused-panel",
+      },
+      {
+        id: "cancelled",
+        content: "Cancelled content",
+        accessibilityLabel: "Cancelled",
+        panelID: "cancelled-panel",
+      },
+    ],
+  ];
+
+  return (
+    <>
+      <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
+        <Box padding="400">
+          <p>Tab {selected} selected</p>
+        </Box>
+      </Tabs>
+    </>
+  );
+}
 function Code({ children }: { children: React.ReactNode }) {
   return (
     <Box

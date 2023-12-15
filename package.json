@@ -27,13 +27,16 @@
     "@shopify/app": "3.52.0",
     "@shopify/cli": "3.52.0",
     "@shopify/polaris": "^12.0.0",
+    "@shopify/polaris-viz": "^10.1.0",
     "@shopify/shopify-api": "^8.0.2",
     "@shopify/shopify-app-remix": "^2.1.0",
     "@shopify/shopify-app-session-storage-prisma": "^2.0.0",
     "isbot": "latest",
     "prisma": "^4.13.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "remix-utils": "^7.3.0",
+    "react-chartjs-2": "^5.2.0"
   },
   "devDependencies": {
     "@remix-run/eslint-config": "^2.0.0",
@@ -53,5 +56,9 @@
   "trustedDependencies": [
     "@shopify/plugin-cloudflare"
   ],
-  "author": "hieunguyen"
+  "author": "hieunguyen",
+  "resolutions": {
+    "wrap-ansi": "7.0.0",
+    "string-width": "4.1.0"
+  }
 }

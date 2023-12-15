@@ -2,7 +2,7 @@
 
 name = "plugin-subscription"
 client_id = "a1b2fc5f328819ca821266a6622ee9f5"
-application_url = "https://rocks-progressive-pull-buying.trycloudflare.com"
+application_url = "https://surprising-unless-pittsburgh-uniprotkb.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://rocks-progressive-pull-buying.trycloudflare.com/auth/callback",
-  "https://rocks-progressive-pull-buying.trycloudflare.com/auth/shopify/callback",
-  "https://rocks-progressive-pull-buying.trycloudflare.com/api/auth/callback"
+  "https://surprising-unless-pittsburgh-uniprotkb.trycloudflare.com/auth/callback",
+  "https://surprising-unless-pittsburgh-uniprotkb.trycloudflare.com/auth/shopify/callback",
+  "https://surprising-unless-pittsburgh-uniprotkb.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
