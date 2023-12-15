@@ -112,7 +112,7 @@ export default function Index() {
   } = useLoaderData<typeof loader>();
   return (
     <Page title="Overview">
-      <ui-title-bar title="The Subcription"></ui-title-bar>
+      <ui-title-bar title="The Subscriptions"></ui-title-bar>
       <BlockStack gap="500">
         <Layout>
           <Layout.Section>
