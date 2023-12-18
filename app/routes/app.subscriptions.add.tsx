@@ -8,6 +8,7 @@ import {
   FormLayout,
   Icon,
   IndexTable,
+  InlineStack,
   Layout,
   Listbox,
   Page,
@@ -152,45 +153,47 @@ export default function AdditionalPage() {
         </Layout.Section>
         <Layout.Section>
           <Card>
-            <BlockStack gap={"200"}>
-              <Text as="h4" variant="headingMd" fontWeight="bold">
-                Customer
-              </Text>
-              <FormLayout>
-                <CustomerPicker onSelect={c => {
-                  let shipping_address = c?.addresses?.[0]
-                  let billing_address = c?.addresses?.[0]
-                  setFormState({
-                    ...formstate,
-                    email: shipping_address?.email || c.email,
-                    'shipping_address.first_name': shipping_address?.first_name,
-                    'shipping_address.last_name': shipping_address?.last_name,
-                    'shipping_address.address1': shipping_address?.address1,
-                    'shipping_address.address2': shipping_address?.address2,
-                    'shipping_address.city': shipping_address?.city,
-                    'shipping_address.province': shipping_address?.province,
-                    'shipping_address.country': shipping_address?.country,
-                    'shipping_address.zip': shipping_address?.zip,
-                    'shipping_address.phone': shipping_address?.phone,
-                    'shipping_address.company': shipping_address?.company,
+            <BlockStack gap={"600"}>
+              <BlockStack gap="200">
 
-                    'billing_address.first_name': billing_address?.first_name,
-                    'billing_address.last_name': billing_address?.last_name,
-                    'billing_address.address1': billing_address?.address1,
-                    'billing_address.address2': billing_address?.address2,
-                    'billing_address.city': billing_address?.city,
-                    'billing_address.province': billing_address?.province,
-                    'billing_address.country': billing_address?.country,
-                    'billing_address.zip': billing_address?.zip,
-                    'billing_address.phone': billing_address?.phone,
-                    'billing_address.company': billing_address?.company,
-                  })
-                }} />
-              </FormLayout>
-              <BlockStack gap={"400"}>
-                <Box />
-                <TextField type="email" label="Email" value={formstate?.email} onChange={console.log} autoComplete="off" />
-                <Box />
+                <Text as="h4" variant="headingMd" fontWeight="bold">
+                  Customer
+                </Text>
+                <FormLayout>
+                  <CustomerPicker onSelect={c => {
+                    let shipping_address = c?.addresses?.[0]
+                    let billing_address = c?.addresses?.[0]
+                    setFormState({
+                      ...formstate,
+                      email: shipping_address?.email || c.email,
+                      'shipping_address.first_name': shipping_address?.first_name,
+                      'shipping_address.last_name': shipping_address?.last_name,
+                      'shipping_address.address1': shipping_address?.address1,
+                      'shipping_address.address2': shipping_address?.address2,
+                      'shipping_address.city': shipping_address?.city,
+                      'shipping_address.province': shipping_address?.province,
+                      'shipping_address.country': shipping_address?.country,
+                      'shipping_address.zip': shipping_address?.zip,
+                      'shipping_address.phone': shipping_address?.phone,
+                      'shipping_address.company': shipping_address?.company,
+
+                      'billing_address.first_name': billing_address?.first_name,
+                      'billing_address.last_name': billing_address?.last_name,
+                      'billing_address.address1': billing_address?.address1,
+                      'billing_address.address2': billing_address?.address2,
+                      'billing_address.city': billing_address?.city,
+                      'billing_address.province': billing_address?.province,
+                      'billing_address.country': billing_address?.country,
+                      'billing_address.zip': billing_address?.zip,
+                      'billing_address.phone': billing_address?.phone,
+                      'billing_address.company': billing_address?.company,
+                    })
+                  }} />
+                </FormLayout>
+              </BlockStack>
+
+              <TextField type="email" label="Email" value={formstate?.email} onChange={console.log} autoComplete="off" />
+              {/* <BlockStack gap={"400"}>
                 <Text as="h4" variant="bodyLg" fontWeight="bold">Shipping address</Text>
                 <FormLayout.Group>
                   <TextField label="First name" value={formstate?.['shipping_address.first_name']} onChange={console.log} autoComplete="off" />
@@ -212,7 +215,8 @@ export default function AdditionalPage() {
                   <TextField label="Phone" value={formstate?.['shipping_address.phone']} onChange={console.log} autoComplete="off" />
                   <TextField label="Company" value={formstate?.['shipping_address.company']} onChange={console.log} autoComplete="off" />
                 </FormLayout.Group>
-                <Box />
+              </BlockStack>
+              <BlockStack gap={"400"}>
                 <Text as="h4" variant="bodyLg" fontWeight="bold">Billing address</Text>
                 <FormLayout.Group>
                   <TextField label="First name" value={formstate?.['billing_address.first_name']} onChange={console.log} autoComplete="off" />
@@ -234,20 +238,22 @@ export default function AdditionalPage() {
                   <TextField label="Phone" value={formstate?.['billing_address.phone']} onChange={console.log} autoComplete="off" />
                   <TextField label="Company" value={formstate?.['billing_address.company']} onChange={console.log} autoComplete="off" />
                 </FormLayout.Group>
-              </BlockStack>
+              </BlockStack> */}
 
             </BlockStack>
           </Card>
 
         </Layout.Section>
         <Layout.Section>
-          <Card>
-            <BlockStack gap={"200"}>
-              <Text as="h4" variant="headingMd" fontWeight="bold">
-                Products
-              </Text>
+          <Card padding={"0"}>
+            <BlockStack>
+              <Box padding={"400"} >
+                <Text as="h4" variant="headingMd" fontWeight="bold">
+                  Products
+                </Text>
+              </Box>
               <IndexTableWithMultiplePromotedBulkActions />
-              <FormLayout>
+              <Box padding={"400"} >
                 <Button variant="primary" onClick={async () => {
                   let p = await shopify.resourcePicker({
                     type: 'product',
@@ -255,10 +261,19 @@ export default function AdditionalPage() {
                   console.log({ p })
                 }} fullWidth>Add Product</Button>
 
-              </FormLayout>
+              </Box>
             </BlockStack>
           </Card>
         </Layout.Section>
+        <Layout.Section >
+          <InlineStack align="end">
+            <Button variant="primary" size="large">Create subscription</Button>
+          </InlineStack>
+        </Layout.Section>
+        <Layout.Section>
+          <Box padding={"1000"} />
+        </Layout.Section>
+
       </Layout>
     </Page >
   );
@@ -391,6 +406,7 @@ function IndexTableWithMultiplePromotedBulkActions() {
 
   return (
     <IndexTable
+
       condensed={useBreakpoints().smDown}
       resourceName={resourceName}
       itemCount={orders.length}
