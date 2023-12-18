@@ -22,6 +22,7 @@ module.exports = {
   future: {},
   serverDependenciesToBundle: [
     /remix-utils/,
+    /@uidotdev/,
     "remix-utils/client-only",
     "@shopify/polaris-viz",
     "@juggle/resize-observer",

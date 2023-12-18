@@ -2,18 +2,18 @@
 
 name = "plugin-subscription"
 client_id = "a1b2fc5f328819ca821266a6622ee9f5"
-application_url = "https://surprising-unless-pittsburgh-uniprotkb.trycloudflare.com"
+application_url = "https://yale-search-shift-bathrooms.trycloudflare.com"
 embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "write_products,read_customers"
 
 [auth]
 redirect_urls = [
-  "https://surprising-unless-pittsburgh-uniprotkb.trycloudflare.com/auth/callback",
-  "https://surprising-unless-pittsburgh-uniprotkb.trycloudflare.com/auth/shopify/callback",
-  "https://surprising-unless-pittsburgh-uniprotkb.trycloudflare.com/api/auth/callback"
+  "https://yale-search-shift-bathrooms.trycloudflare.com/auth/callback",
+  "https://yale-search-shift-bathrooms.trycloudflare.com/auth/shopify/callback",
+  "https://yale-search-shift-bathrooms.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
