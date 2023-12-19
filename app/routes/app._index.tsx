@@ -1,8 +1,3 @@
-import {
-  ActionFunctionArgs,
-  json,
-  type LoaderFunctionArgs,
-} from "@remix-run/node";
 
 import { useLoaderData } from "@remix-run/react";
 import {
@@ -22,7 +17,6 @@ import {
   PolarisVizProvider,
 } from "@shopify/polaris-viz";
 import { ClientOnly } from "remix-utils/client-only";
-import { authenticate } from "../shopify.server";
 async function getTotalSubscription() {
   return 0;
 }
@@ -61,58 +55,7 @@ async function getTotalActiveSubscriptionRecent() {
     },
   ];
 }
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await authenticate.admin(request);
 
-  return {
-    totalSubscriptions: await getTotalSubscription(),
-    totalActiveSubscriptions: await getTotalActiveSubscription(),
-    totalActiveSubscriptionsRecent: await getTotalActiveSubscriptionRecent(),
-  };
-};
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const { admin } = await authenticate.admin(request);
-  const color = ["Red", "Orange", "Yellow", "Green"][
-    Math.floor(Math.random() * 4)
-  ];
-  const response = await admin.graphql(
-    `#graphql
-      mutation populateProduct($input: ProductInput!) {
-        productCreate(input: $input) {
-          product {
-            id
-            title
-            handle
-            status
-            variants(first: 10) {
-              edges {
-                node {
-                  id
-                  price
-                  barcode
-                  createdAt
-                }
-              }
-            }
-          }
-        }
-      }`,
-    {
-      variables: {
-        input: {
-          title: `${color} Snowboard`,
-          variants: [{ price: Math.random() * 100 }],
-        },
-      },
-    },
-  );
-  const responseJson = await response.json();
-
-  return json({
-    product: responseJson.data.productCreate.product,
-  });
-};
 export default function Index() {
   const {
     totalSubscriptions,
