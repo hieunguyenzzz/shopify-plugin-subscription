@@ -1,3 +1,6 @@
+import {
+  type LoaderFunctionArgs
+} from "@remix-run/node";
 
 import { useLoaderData } from "@remix-run/react";
 import {
@@ -17,6 +20,7 @@ import {
   PolarisVizProvider,
 } from "@shopify/polaris-viz";
 import { ClientOnly } from "remix-utils/client-only";
+import { authenticate } from "../shopify.server";
 async function getTotalSubscription() {
   return 0;
 }
@@ -55,6 +59,16 @@ async function getTotalActiveSubscriptionRecent() {
     },
   ];
 }
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  await authenticate.admin(request);
+
+  return {
+    totalSubscriptions: await getTotalSubscription(),
+    totalActiveSubscriptions: await getTotalActiveSubscription(),
+    totalActiveSubscriptionsRecent: await getTotalActiveSubscriptionRecent(),
+  };
+};
+
 
 export default function Index() {
   const {
