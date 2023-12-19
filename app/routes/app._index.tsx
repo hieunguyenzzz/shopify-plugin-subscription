@@ -8,12 +8,13 @@ import { useLoaderData } from "@remix-run/react";
 import {
   BlockStack,
   Box,
+  Button,
   Card,
   InlineStack,
   Layout,
   Link,
   Page,
-  Text,
+  Text
 } from "@shopify/polaris";
 import {
   DataSeries,
@@ -22,43 +23,51 @@ import {
 } from "@shopify/polaris-viz";
 import { ClientOnly } from "remix-utils/client-only";
 import { authenticate } from "../shopify.server";
-
+async function getTotalSubscription() {
+  return 0;
+}
+async function getTotalActiveSubscription() {
+  return 0;
+}
+async function getTotalActiveSubscriptionRecent() {
+  return [
+    {
+      value: 2,
+      key: "12-09",
+    },
+    {
+      value: 5,
+      key: "12-10",
+    },
+    {
+      value: 0,
+      key: "12-11",
+    },
+    {
+      value: 0,
+      key: "12-12",
+    },
+    {
+      value: 2,
+      key: "12-13",
+    },
+    {
+      value: 1,
+      key: "12-14",
+    },
+    {
+      value: 5,
+      key: "12-15",
+    },
+  ];
+}
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
 
   return {
-    totalSubscriptions: 0,
-    totalActiveSubscriptions: 0,
-    totalActiveSubscriptionsRecent: [
-      {
-        value: 2,
-        key: "12-09",
-      },
-      {
-        value: 5,
-        key: "12-10",
-      },
-      {
-        value: 0,
-        key: "12-11",
-      },
-      {
-        value: 0,
-        key: "12-12",
-      },
-      {
-        value: 2,
-        key: "12-13",
-      },
-      {
-        value: 1,
-        key: "12-14",
-      },
-      {
-        value: 5,
-        key: "12-15",
-      },
-    ],
+    totalSubscriptions: await getTotalSubscription(),
+    totalActiveSubscriptions: await getTotalActiveSubscription(),
+    totalActiveSubscriptionsRecent: await getTotalActiveSubscriptionRecent(),
   };
 };
 
@@ -113,6 +122,7 @@ export default function Index() {
   return (
     <Page title="Overview">
       <ui-title-bar title="The Subscriptions"></ui-title-bar>
+
       <BlockStack gap="500">
         <Layout>
           <Layout.Section>
@@ -148,7 +158,7 @@ export default function Index() {
                       <Text as="h2" variant="headingMd">
                         Total active subscriptions
                       </Text>
-                      <Box padding="400" width="586px">
+                      <Box padding="400" width="586px" minHeight="600">
                         <RecentActivitychart
                           data={[
                             {
@@ -160,6 +170,28 @@ export default function Index() {
                       </Box>
                     </BlockStack>
                   </BlockStack>
+                </Card>
+              </Layout.Section>
+              <Layout.Section>
+                <Card >
+                  <Text as="h3" fontWeight="bold">
+                    Subsctiptions
+                  </Text>
+                  <Box padding={"100"} />
+                  <p>View a summary of your Subsctiptions.</p>
+                  <Box padding={"100"} />
+                  <Button fullWidth url="/app/subscriptions">Details</Button>
+                </Card>
+              </Layout.Section>
+              <Layout.Section>
+                <Card >
+                  <Text as="h3" fontWeight="bold">
+                    Subsctiption Rules
+                  </Text>
+                  <Box padding={"100"} />
+                  <p>View a summary of your online Subsctiption rules.</p>
+                  <Box padding={"100"} />
+                  <Button fullWidth url="/app/subscription-rules">Details</Button>
                 </Card>
               </Layout.Section>
             </Layout>
@@ -187,8 +219,8 @@ export default function Index() {
             </BlockStack>
           </Layout.Section>
         </Layout>
-      </BlockStack>
-    </Page>
+      </BlockStack >
+    </Page >
   );
 }
 
@@ -197,18 +229,17 @@ const RecentActivitychart = ({ data }: { data: DataSeries[] }) => {
     <ClientOnly fallback={null}>
       {() => (
         <PolarisVizProvider>
-          <div style={{ position: "relative" }}>
-            <LineChart
-              showLegend={false}
-              tooltipOptions={{
-                renderTooltipContent: (data) => {
-                  return null;
-                },
-              }}
-              theme="Light"
-              data={data}
-            ></LineChart>
-          </div>
+          <LineChart
+
+            showLegend={false}
+            tooltipOptions={{
+              renderTooltipContent: (data) => {
+                return null;
+              },
+            }}
+            theme="Light"
+            data={data}
+          ></LineChart>
         </PolarisVizProvider>
       )}
     </ClientOnly>

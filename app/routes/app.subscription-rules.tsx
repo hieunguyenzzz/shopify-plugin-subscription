@@ -23,6 +23,10 @@ export default function AdditionalPage() {
     <Page
       title="Subcription rules"
       secondaryActions={[{ content: "Add Rule" }]}
+      backAction={{
+        url: '/app',
+        content: 'Back',
+      }}
     >
       <ui-title-bar title="The Subscriptions"></ui-title-bar>
 
@@ -73,48 +77,48 @@ function IndexTableWithFiltering() {
   const tabs: TabProps[] = itemStrings.map((item, index) => ({
     content: item,
     index,
-    onAction: () => {},
+    onAction: () => { },
     id: `${item}-${index}`,
     isLocked: index === 0,
     actions:
       index === 0
         ? []
         : [
-            {
-              type: "rename",
-              onAction: () => {},
-              onPrimaryAction: async (value: string): Promise<boolean> => {
-                const newItemsStrings = tabs.map((item, idx) => {
-                  if (idx === index) {
-                    return value;
-                  }
-                  return item.content;
-                });
-                await sleep(1);
-                setItemStrings(newItemsStrings);
-                return true;
-              },
+          {
+            type: "rename",
+            onAction: () => { },
+            onPrimaryAction: async (value: string): Promise<boolean> => {
+              const newItemsStrings = tabs.map((item, idx) => {
+                if (idx === index) {
+                  return value;
+                }
+                return item.content;
+              });
+              await sleep(1);
+              setItemStrings(newItemsStrings);
+              return true;
             },
-            {
-              type: "duplicate",
-              onPrimaryAction: async (value: string): Promise<boolean> => {
-                await sleep(1);
-                duplicateView(value);
-                return true;
-              },
+          },
+          {
+            type: "duplicate",
+            onPrimaryAction: async (value: string): Promise<boolean> => {
+              await sleep(1);
+              duplicateView(value);
+              return true;
             },
-            {
-              type: "edit",
+          },
+          {
+            type: "edit",
+          },
+          {
+            type: "delete",
+            onPrimaryAction: async () => {
+              await sleep(1);
+              deleteView(index);
+              return true;
             },
-            {
-              type: "delete",
-              onPrimaryAction: async () => {
-                await sleep(1);
-                deleteView(index);
-                return true;
-              },
-            },
-          ],
+          },
+        ],
   }));
   const [selected, setSelected] = useState(0);
   const onCreateNewView = async (value: string) => {
@@ -135,7 +139,7 @@ function IndexTableWithFiltering() {
   ];
   const [sortSelected, setSortSelected] = useState(["order asc"]);
   const { mode, setMode } = useSetIndexFiltersMode(IndexFiltersMode.Filtering);
-  const onHandleCancel = () => {};
+  const onHandleCancel = () => { };
 
   const onHandleSave = async () => {
     await sleep(1);
@@ -145,17 +149,17 @@ function IndexTableWithFiltering() {
   const primaryAction: IndexFiltersProps["primaryAction"] =
     selected === 0
       ? {
-          type: "save-as",
-          onAction: onCreateNewView,
-          disabled: false,
-          loading: false,
-        }
+        type: "save-as",
+        onAction: onCreateNewView,
+        disabled: false,
+        loading: false,
+      }
       : {
-          type: "save",
-          onAction: onHandleSave,
-          disabled: false,
-          loading: false,
-        };
+        type: "save",
+        onAction: onHandleSave,
+        disabled: false,
+        loading: false,
+      };
   const [accountStatus, setAccountStatus] = useState<string[]>([]);
   const [moneySpent, setMoneySpent] = useState<[number, number] | undefined>(
     undefined,
@@ -255,12 +259,12 @@ function IndexTableWithFiltering() {
   const appliedFilters =
     taggedWith && !isEmpty(taggedWith)
       ? [
-          {
-            key: "taggedWith",
-            label: disambiguateLabel("taggedWith", taggedWith),
-            onRemove: handleTaggedWithRemove,
-          },
-        ]
+        {
+          key: "taggedWith",
+          label: disambiguateLabel("taggedWith", taggedWith),
+          onRemove: handleTaggedWithRemove,
+        },
+      ]
       : [];
 
   const orders = [

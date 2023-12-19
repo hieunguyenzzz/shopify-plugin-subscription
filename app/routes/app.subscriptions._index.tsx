@@ -52,6 +52,10 @@ export default function AdditionalPage() {
     <Page
       title="Subcriptions"
       secondaryActions={[{ content: "Add subscription", url: '/app/subscriptions/add' }]}
+      backAction={{
+        url: '/app',
+        content: 'Back',
+      }}
     >
       <ui-title-bar title="The Subscriptions"></ui-title-bar>
       <Layout>
