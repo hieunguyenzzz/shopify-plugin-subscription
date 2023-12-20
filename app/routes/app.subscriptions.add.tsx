@@ -1,5 +1,4 @@
 import {
-  Badge,
   BlockStack,
   Box,
   Button,
@@ -13,7 +12,6 @@ import {
   Listbox,
   Page,
   Select,
-  Tabs,
   Text,
   TextField,
   useBreakpoints,
@@ -21,7 +19,7 @@ import {
 } from "@shopify/polaris";
 import { SearchMinor } from "@shopify/polaris-icons";
 import { useDebounce } from "@uidotdev/usehooks";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const CustomerPicker = ({ onSelect }: { onSelect: (c: any) => void }) => {
   const cachedRef = useRef<{ [key: string]: any }>({}); // cache the data
@@ -73,7 +71,8 @@ const CustomerPicker = ({ onSelect }: { onSelect: (c: any) => void }) => {
 }
 export default function AdditionalPage() {
   const [formstate, setFormState] = useState<{ [key: string]: any }>({});
-  console.log({ formstate })
+  const [lineItems, setlineItems] = useState<any[]>([])
+  const variantsCacheRef = useRef<{ [key: string]: any }>({}); // cache the data
   return (
     <Page
       title="New Subcription"
@@ -252,13 +251,58 @@ export default function AdditionalPage() {
                   Products
                 </Text>
               </Box>
-              <IndexTableWithMultiplePromotedBulkActions />
+              <IndexTableWithMultiplePromotedBulkActions
+                onRemove={(ids) => {
+                  setlineItems((lineItems: any[]) => {
+                    return lineItems.filter((lineItem) => !ids.includes(lineItem.id))
+                  })
+                }}
+                lineItems={
+                  lineItems
+                }
+                onUpdateLineItem={(id, quantity) => {
+                  console.log({ id, quantity })
+                  setlineItems((lineItems: any[]) => {
+                    return lineItems.map((lineItem) => {
+                      if (lineItem.id === id) {
+                        return {
+                          ...lineItem,
+                          quantity
+                        }
+                      }
+                      return lineItem
+                    })
+                  })
+                }}
+              />
               <Box padding={"400"} >
                 <Button variant="primary" onClick={async () => {
-                  let p = await shopify.resourcePicker({
+                  let { selection } = await shopify.resourcePicker({
                     type: 'product',
+                    action: 'select',
+                  }) as any
+                  console.log({ selection })
+                  setlineItems((lineItems: any[]) => {
+                    let arr = [...lineItems.map(line => line.id), ...selection.flatMap((p: any) => p.variants.map((v: any) => {
+                      variantsCacheRef.current[v.id] = v
+                      variantsCacheRef.current[v.id].product = p
+                      return v.id
+                    }))]
+                    return Object.values(arr.reduce((acc: {}, id: string) => {
+                      let v = variantsCacheRef.current[id]
+                      if (!v) return acc
+                      if (!acc[id]) {
+                        acc[id] = {
+                          id,
+                          variant: v,
+                          quantity: 1
+                        }
+                      } else {
+                        acc[id].quantity++
+                      }
+                      return acc
+                    }, {}))
                   })
-                  console.log({ p })
                 }} fullWidth>Add Product</Button>
 
               </Box>
@@ -278,98 +322,35 @@ export default function AdditionalPage() {
     </Page >
   );
 }
-
-function Content() {
-  const [selected, setSelected] = useState(0);
-
-  const handleTabChange = useCallback(
-    (selectedTabIndex: number) => setSelected(selectedTabIndex),
-    [],
-  );
-
-  const tabs = [
-    {
-      id: "Upcoming subscriptions",
-      content: "Upcoming subscriptions",
-      accessibilityLabel: "Upcoming subscriptions",
-      panelID: "Upcoming subscriptions",
-    },
-    {
-      id: "With failed payment",
-      content: "With failed payment",
-      accessibilityLabel: "With failed payment",
-      panelID: "With failed payment",
-    },
-    {
-      id: "With pending payment",
-      content: "With pending payment",
-      accessibilityLabel: "With pending payment",
-      panelID: "With pending payment",
-    },
-    {
-      id: "Paused",
-      content: "Paused",
-      accessibilityLabel: "Paused",
-      panelID: "Paused",
-    },
-    {
-      id: "Cancelled",
-      content: "Cancelled content",
-      accessibilityLabel: "Cancelled",
-      panelID: "Cancelled",
-    },
-  ];
-
-  return (
-    <>
-      <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
-        <IndexTableWithFiltering />
-      </Tabs>
-    </>
-  );
+let formatNumber = (n: number) => {
+  return n.toLocaleString('en-US', { style: 'currency', currency: 'GBP' })
 }
 
-function IndexTableWithMultiplePromotedBulkActions() {
-  const orders = [
-    {
-      id: '1020',
-      order: '#1020',
-      date: 'Jul 20 at 4:34pm',
-      customer: 'Jaydon Stanton',
-      total: '$969.44',
-      paymentStatus: <Badge progress="complete">Paid</Badge>,
-      fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
-    },
-    {
-      id: '1019',
-      order: '#1019',
-      date: 'Jul 20 at 3:46pm',
-      customer: 'Ruben Westerfelt',
-      total: '$701.19',
-      paymentStatus: <Badge progress="partiallyComplete">Partially paid</Badge>,
-      fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
-    },
-    {
-      id: '1018',
-      order: '#1018',
-      date: 'Jul 20 at 3.44pm',
-      customer: 'Leo Carder',
-      total: '$798.24',
-      paymentStatus: <Badge progress="complete">Paid</Badge>,
-      fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
-    },
-  ];
+function IndexTableWithMultiplePromotedBulkActions({ lineItems, onRemove, onUpdateLineItem }: {
+  onRemove: (ids: string[]) => void,
+  onUpdateLineItem: (id: string, quantity: number) => void,
+  lineItems: {
+    variant: {
+      id: string,
+      displayName: string,
+      price: string,
+    }
+    quantity: number,
+
+  }[]
+}) {
+  console.log("==>", lineItems)
+
   const resourceName = {
-    singular: 'order',
-    plural: 'orders',
+    singular: 'product',
+    plural: 'products',
   };
 
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
-    useIndexResourceState(orders);
-
-  const rowMarkup = orders.map(
+    useIndexResourceState(lineItems);
+  const rowMarkup = lineItems.map(
     (
-      { id, order, date, customer, total, paymentStatus, fulfillmentStatus },
+      { quantity, variant: { displayName, price, id } },
       index,
     ) => (
       <IndexTable.Row
@@ -379,48 +360,58 @@ function IndexTableWithMultiplePromotedBulkActions() {
         position={index}
       >
         <IndexTable.Cell>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {order}
+          <Text variant="bodyMd" as="span">
+            {displayName}
           </Text>
         </IndexTable.Cell>
-        <IndexTable.Cell>{date}</IndexTable.Cell>
-        <IndexTable.Cell>{customer}</IndexTable.Cell>
+        <IndexTable.Cell>{formatNumber(Number(price))}</IndexTable.Cell>
+        <IndexTable.Cell  >
+          <div onClick={e => {
+            e.stopPropagation()
+          }}>
+            <TextField
+              label=""
+              type="number"
+              min={1}
+              step={1}
+              value={'' + (quantity)}
+              onChange={(value) => { onUpdateLineItem(id, Number(value)) }}
+              autoComplete="off"
+            />
+          </div>
+        </IndexTable.Cell>
         <IndexTable.Cell>
           <Text as="span" alignment="end" numeric>
-            {total}
+            {formatNumber(Number(price) * quantity)}
           </Text>
         </IndexTable.Cell>
-        <IndexTable.Cell>{paymentStatus}</IndexTable.Cell>
-        <IndexTable.Cell>{fulfillmentStatus}</IndexTable.Cell>
-      </IndexTable.Row>
+
+      </IndexTable.Row >
     ),
   );
 
   const promotedBulkActions = [
     {
       content: 'Remove',
-      onAction: () => console.log('Todo: implement bulk remove'),
+      onAction: () => onRemove(selectedResources),
     },
 
   ];
 
   return (
     <IndexTable
-
       condensed={useBreakpoints().smDown}
       resourceName={resourceName}
-      itemCount={orders.length}
+      itemCount={lineItems.length}
       selectedItemsCount={
         allResourcesSelected ? 'All' : selectedResources.length
       }
       onSelectionChange={handleSelectionChange}
       headings={[
-        { title: 'Order' },
-        { title: 'Date' },
-        { title: 'Customer' },
-        { title: 'Total', alignment: 'end' },
-        { title: 'Payment status' },
-        { title: 'Fulfillment status' },
+        { title: 'Name' },
+        { title: 'Price' },
+        { title: 'Quantity' },
+        { title: 'Total Price', alignment: 'end' },
       ]}
       promotedBulkActions={promotedBulkActions}
     >

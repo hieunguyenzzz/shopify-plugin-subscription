@@ -2,7 +2,7 @@
 
 name = "plugin-subscription"
 client_id = "a1b2fc5f328819ca821266a6622ee9f5"
-application_url = "https://carefully-major-cadillac-manufacturer.trycloudflare.com"
+application_url = "https://we-conventions-blah-hartford.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_customers"
 
 [auth]
 redirect_urls = [
-  "https://carefully-major-cadillac-manufacturer.trycloudflare.com/auth/callback",
-  "https://carefully-major-cadillac-manufacturer.trycloudflare.com/auth/shopify/callback",
-  "https://carefully-major-cadillac-manufacturer.trycloudflare.com/api/auth/callback"
+  "https://we-conventions-blah-hartford.trycloudflare.com/auth/callback",
+  "https://we-conventions-blah-hartford.trycloudflare.com/auth/shopify/callback",
+  "https://we-conventions-blah-hartford.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
